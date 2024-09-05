@@ -37,7 +37,7 @@ for %%p in (%platforms%) do (
             set GOARM=!GOARM!
         )
 
-        xcaddy build %version% --with github.com/caddyserver/forwardproxy@caddy2=github.com/klzgrad/forwardproxy@naive --output %output_dir%/!output_name!
+        xcaddy build %version% --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output %output_dir%/!output_name!
 
         if !errorlevel! == 0 (
             echo Build succeeded for !GOOS!/!GOARCH! !GOARM!
