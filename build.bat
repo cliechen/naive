@@ -20,7 +20,7 @@ for %%p in (%platforms%) do (
         set "GOARCH=%%b"
         set "GOARM=%%c"
 
-        set "output_name=h-ui-!GOOS!-!GOARCH!"
+        set "output_name=caddy-forwardproxy-!GOOS!-!GOARCH!"
         if "!GOARCH!" == "arm" (
             set "output_name=!output_name!v!GOARM!"
         )
