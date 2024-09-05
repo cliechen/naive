@@ -1,53 +1,38 @@
-@echo off
-setlocal enabledelayedexpansion
-
-REM target platform array
-set platforms=linux/386 linux/amd64 linux/arm/6 linux/arm/7 linux/arm64 linux/ppc64le linux/s390x
-
-REM output directory
-set output_dir=build
-set version=v2.6.0
-
-REM make sure the output directory exists
-if not exist %output_dir% mkdir %output_dir%
-
-REM compile for each target platform
-for %%p in (%platforms%) do (
-    set "platform=%%p"
-
-    for /F "tokens=1,2,3 delims=/" %%a in ("!platform!") do (
-        set "GOOS=%%a"
-        set "GOARCH=%%b"
-        set "GOARM=%%c"
-
-        set "output_name=caddy-forwardproxy-!GOOS!-!GOARCH!"
-        if "!GOARCH!" == "arm" (
-            set "output_name=!output_name!v!GOARM!"
-        )
-
-        if "!GOOS!" == "windows" (
-            set "output_name=!output_name!.exe"
-        )
-
-        echo Building for !GOOS!/!GOARCH! !GOARM!...
-        set CGO_ENABLED=0
-        set GOOS=!GOOS!
-        set GOARCH=!GOARCH!
-        if defined GOARM (
-            set GOARM=!GOARM!
-        )
-
-        xcaddy build %version% --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output %output_dir%/!output_name!
-
-        if !errorlevel! == 0 (
-            echo Build succeeded for !GOOS!/!GOARCH! !GOARM!
-        ) else (
-            echo Error occurred during building for !GOOS!/!GOARCH! !GOARM!
-            echo CGO_ENABLED=!CGO_ENABLED! GOOS=!GOOS! GOARCH=!GOARCH! GOARM=!GOARM!
-            exit /b 1
-        )
-    )
-)
-
-echo All builds completed successfully!
-endlocal
+go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+::Linux 386
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=386
+xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-386
+::Linux amd64
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=amd64
+xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-amd64
+::Linux armv6
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=arm
+SET GOARM=6
+xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-armv6
+::Linux armv7
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=arm
+SET GOARM=7
+xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-armv7
+::Linux arm64
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=arm64
+xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-arm64
+::Linux ppc64le
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=ppc64le
+xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-ppc64le
+::Linux s390x
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=s390x
+xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-s390x
