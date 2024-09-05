@@ -6,7 +6,7 @@ set platforms=linux/386 linux/amd64 linux/arm/6 linux/arm/7 linux/arm64 linux/pp
 
 REM output directory
 set output_dir=build
-set version=v2.7.1
+set version=v2.6.0
 
 REM make sure the output directory exists
 if not exist %output_dir% mkdir %output_dir%
