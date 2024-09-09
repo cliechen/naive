@@ -1,0 +1,12 @@
+[Unit]
+Description=caddy-forwardproxy Service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/local/caddy-forwardproxy/
+ExecStart=/usr/local/caddy-forwardproxy/caddy-forwardproxy
+
+[Install]
+WantedBy=multi-user.target
