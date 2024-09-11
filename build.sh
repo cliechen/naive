@@ -11,7 +11,8 @@ handle_error() {
 # Set Go proxy to a China mirror for faster package downloads
 set_goproxy() {
   echo "Setting Go proxy to a China mirror..."
-  go env -w GOPROXY=https://goproxy.cn,direct || handle_error "Failed to set Go proxy. Please check manually."
+  go env -w GO111MODULE=on || handle_error "Failed to set GO111MODULE. Please check manually."
+  go env -w GOPROXY=https://goproxy.cn,direct || handle_error "Failed to set GOPROXY. Please check manually."
   echo "Go proxy set successfully."
 }
 
