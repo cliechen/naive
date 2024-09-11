@@ -1,38 +1,35 @@
+@echo off
+
+:: Install xcaddy if not already installed
 go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-::Linux 386
-SET CGO_ENABLED=0
-SET GOOS=linux
-SET GOARCH=386
-xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-386
-::Linux amd64
-SET CGO_ENABLED=0
-SET GOOS=linux
-SET GOARCH=amd64
-xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-amd64
-::Linux armv6
-SET CGO_ENABLED=0
-SET GOOS=linux
-SET GOARCH=arm
-SET GOARM=6
-xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-armv6
-::Linux armv7
-SET CGO_ENABLED=0
-SET GOOS=linux
-SET GOARCH=arm
-SET GOARM=7
-xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-armv7
-::Linux arm64
-SET CGO_ENABLED=0
-SET GOOS=linux
-SET GOARCH=arm64
-xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-arm64
-::Linux ppc64le
-SET CGO_ENABLED=0
-SET GOOS=linux
-SET GOARCH=ppc64le
-xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-ppc64le
-::Linux s390x
-SET CGO_ENABLED=0
-SET GOOS=linux
-SET GOARCH=s390x
-xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-linux-s390x
+
+:: Define an array of platforms and architectures
+set PLATFORMS=386 amd64 armv6 armv7 arm64 ppc64le s390x
+
+:: Loop through each platform and build
+for %%P in (%PLATFORMS%) do (
+    echo Building Caddy for linux/%%P...
+
+    if %%P==armv6 (
+        set GOOS=linux
+        set GOARCH=arm
+        set GOARM=6
+    ) else if %%P==armv7 (
+        set GOOS=linux
+        set GOARCH=arm
+        set GOARM=7
+    ) else (
+        set GOOS=linux
+        set GOARCH=%%P
+        set GOARM=
+    )
+
+    set CGO_ENABLED=0
+    xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-%GOOS%-%GOARCH%%GOARM%
+    
+    if errorlevel 1 (
+        echo Failed to build Caddy for %GOOS%/%GOARCH%%GOARM%. Skipping.
+    ) else (
+        echo Successfully build: build/caddy-forwardproxy-%GOOS%-%GOARCH%%GOARM%.
+    )
+)
