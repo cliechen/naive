@@ -2,48 +2,38 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
+# Error handling function
+handle_error() {
+  echo "$1"
+  exit 1
+}
+
 # Set Go proxy to a China mirror for faster package downloads
 set_goproxy() {
   echo "Setting Go proxy to a China mirror..."
-  go env -w GOPROXY=https://goproxy.cn,direct
-  if [ $? -eq 0 ]; then
-    echo "Go proxy set successfully."
-  else
-    echo "Failed to set Go proxy. Please check manually."
-    exit 1
-  fi
+  go env -w GOPROXY=https://goproxy.cn,direct || handle_error "Failed to set Go proxy. Please check manually."
+  echo "Go proxy set successfully."
 }
 
 # Check if Go is installed, and install it if not
 install_go() {
   if ! command -v go &>/dev/null; then
     echo "Go is not installed. Installing Go..."
-    sudo apt update
-    sudo apt install -y golang-go
-    if ! command -v go &>/dev/null; then
-      echo "Failed to install Go. Please install it manually."
-      exit 1
-    else
-      echo "Go installed successfully."
-      set_goproxy
-    fi
+    sudo apt update && sudo apt install -y golang-go || handle_error "Failed to install Go. Please install it manually."
+    echo "Go installed successfully."
   else
     echo "Go is already installed. Version information:"
     go version
   fi
+  set_goproxy
 }
 
 # Check if xcaddy is installed
 check_xcaddy() {
   if ! command -v xcaddy &>/dev/null; then
     echo "xcaddy is not installed. Installing xcaddy..."
-    go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-    if ! command -v xcaddy &>/dev/null; then
-      echo "Failed to install xcaddy. Please check manually."
-      exit 1
-    else
-      echo "xcaddy installed successfully."
-    fi
+    go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest || handle_error "Failed to install xcaddy. Please check manually."
+    echo "xcaddy installed successfully."
   else
     echo "xcaddy is already installed. Version information:"
     xcaddy version
@@ -62,16 +52,15 @@ cross_compile_caddy() {
     "linux/s390x"
   )
 
+  # Ensure the build directory exists
+  mkdir -p build || handle_error "Failed to create build directory."
+
   for PLATFORM in "${PLATFORMS[@]}"; do
     IFS="/" read -r GOOS GOARCH <<<"$PLATFORM"
     echo "Cross-compiling Caddy for $GOOS/$GOARCH with forwardproxy plugin..."
     XCADDY_OUT="build/caddy-forwardproxy-${GOOS}-${GOARCH}"
-    CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH xcaddy build --output "$XCADDY_OUT" --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive
-    if [ $? -eq 0 ]; then
-      echo "Caddy successfully build for $GOOS/$GOARCH: $XCADDY_OUT"
-    else
-      echo "Failed to build Caddy for $GOOS/$GOARCH. Please check the logs."
-    fi
+    CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH xcaddy build --output "$XCADDY_OUT" --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive || echo "Failed to build Caddy for $GOOS/$GOARCH. Skipping."
+    echo "Caddy successfully built for $GOOS/$GOARCH: $XCADDY_OUT"
   done
 }
 
