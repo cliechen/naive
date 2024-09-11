@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
-export PATH
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 
 # Error handling function
 handle_error() {
@@ -8,44 +7,36 @@ handle_error() {
   exit 1
 }
 
-# Set Go proxy to a China mirror for faster package downloads
-set_goproxy() {
-  echo "Setting Go proxy to a China mirror..."
-  go env -w GO111MODULE=on || handle_error "Failed to set GO111MODULE. Please check manually."
-  go env -w GOPROXY=https://goproxy.cn,direct || handle_error "Failed to set GOPROXY. Please check manually."
-  echo "Go proxy set successfully."
-}
-
-# Set GOPATH and add it to the environment PATH
-set_gopath() {
-  GOPATH=$HOME/go
-  export GOPATH
+# Set Go proxy and GOPATH environment
+set_go_env() {
+  echo "Configuring Go environment..."
+  go env -w GO111MODULE=on GOPROXY=https://goproxy.cn,direct || handle_error "Failed to configure Go environment."
+  export GOPATH=$HOME/go
   export PATH=$PATH:$GOPATH/bin
-  echo "GOPATH set to $GOPATH and added to PATH."
+  echo "Go environment configured successfully."
 }
 
-# Check if Go is installed, and install it if not
+# Install Go if not present
 install_go() {
   if ! command -v go &>/dev/null; then
     echo "Go is not installed. Installing Go..."
-    sudo apt update && sudo apt install -y golang-go || handle_error "Failed to install Go. Please install it manually."
+    sudo apt update && sudo apt install -y golang-go || handle_error "Failed to install Go."
     echo "Go installed successfully."
   else
-    echo "Go is already installed. Version information:"
+    echo "Go is already installed. Version:"
     go version
   fi
-  set_goproxy
-  set_gopath
+  set_go_env
 }
 
-# Check if xcaddy is installed
-check_xcaddy() {
+# Install xcaddy if not present
+install_xcaddy() {
   if ! command -v xcaddy &>/dev/null; then
     echo "xcaddy is not installed. Installing xcaddy..."
-    go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest || handle_error "Failed to install xcaddy. Please check manually."
+    go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest || handle_error "Failed to install xcaddy."
     echo "xcaddy installed successfully."
   else
-    echo "xcaddy is already installed. Version information:"
+    echo "xcaddy is already installed. Version:"
     xcaddy version
   fi
 }
@@ -62,24 +53,25 @@ cross_compile_caddy() {
     "linux/s390x"
   )
 
-  # Ensure the build directory exists
   mkdir -p build || handle_error "Failed to create build directory."
 
   for PLATFORM in "${PLATFORMS[@]}"; do
     IFS="/" read -r GOOS GOARCH <<<"$PLATFORM"
-    echo "Cross-compiling Caddy for $GOOS/$GOARCH with forwardproxy plugin..."
+    echo "Cross-compiling Caddy for $GOOS/$GOARCH..."
     XCADDY_OUT="build/caddy-forwardproxy-${GOOS}-${GOARCH}"
-    CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH xcaddy build --output "$XCADDY_OUT" --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive || echo "Failed to build Caddy for $GOOS/$GOARCH. Skipping."
+    CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH xcaddy build --output "$XCADDY_OUT" \
+      --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive ||
+      echo "Failed to build Caddy for $GOOS/$GOARCH. Skipping."
     echo "Caddy successfully built for $GOOS/$GOARCH: $XCADDY_OUT"
   done
 }
 
-# Main function to run all tasks
+# Main function
 main() {
   install_go
-  check_xcaddy
+  install_xcaddy
   cross_compile_caddy
-  echo "Caddy cross-compilation with forwardproxy completed for all platforms."
+  echo "Caddy cross-compilation completed for all platforms."
 }
 
 # Execute the main function
