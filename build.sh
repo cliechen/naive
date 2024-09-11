@@ -16,6 +16,14 @@ set_goproxy() {
   echo "Go proxy set successfully."
 }
 
+# Set GOPATH and add it to the environment PATH
+set_gopath() {
+  GOPATH=$HOME/go
+  export GOPATH
+  export PATH=$PATH:$GOPATH/bin
+  echo "GOPATH set to $GOPATH and added to PATH."
+}
+
 # Check if Go is installed, and install it if not
 install_go() {
   if ! command -v go &>/dev/null; then
@@ -27,6 +35,7 @@ install_go() {
     go version
   fi
   set_goproxy
+  set_gopath
 }
 
 # Check if xcaddy is installed
