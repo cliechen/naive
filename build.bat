@@ -30,7 +30,7 @@ for %%P in (%PLATFORMS%) do (
         set GOARCH=%%P
     )
 
-    xcaddy build --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive --output build/caddy-forwardproxy-%GOOS%-%GOARCH%v%GOARM%
+    xcaddy build --output build/caddy-forwardproxy-%GOOS%-%GOARCH%v%GOARM% --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive
 
     if errorlevel 1 (
         echo Failed to build Caddy for %GOOS%/%GOARCH%v%GOARM%. Skipping.
