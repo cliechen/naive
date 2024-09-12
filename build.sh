@@ -56,13 +56,23 @@ cross_compile_caddy() {
   mkdir -p build || handle_error "Failed to create build directory."
 
   for PLATFORM in "${PLATFORMS[@]}"; do
-    IFS="/" read -r GOOS GOARCH <<<"$PLATFORM"
-    echo "Cross-compiling Caddy for $GOOS/$GOARCH..."
+    IFS="/" read -r GOOS GOARCH GOARM <<<"$PLATFORM"
+
+    # Set output file name
     XCADDY_OUT="build/caddy-forwardproxy-${GOOS}-${GOARCH}"
-    CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH xcaddy build --output "$XCADDY_OUT" \
+    if [[ "$GOARCH" == "arm" ]]; then
+      XCADDY_OUT="${XCADDY_OUT}v${GOARM}"
+    fi
+
+    echo "Cross-compiling Caddy for $GOOS/$GOARCH/$GOARM..."
+
+    # Set CGO_ENABLED and environment variables for xcaddy build
+    CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH GOARM=$GOARM \
+      xcaddy build --output "$XCADDY_OUT" \
       --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive ||
-      echo "Failed to build Caddy for $GOOS/$GOARCH. Skipping."
-    echo "Caddy successfully built for $GOOS/$GOARCH: $XCADDY_OUT"
+      echo "Failed to build Caddy for $GOOS/$GOARCH/$GOARM. Skipping."
+
+    echo "Caddy successfully built for $GOOS/$GOARCH/$GOARM: $XCADDY_OUT"
   done
 }
 
