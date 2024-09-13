@@ -27,4 +27,4 @@ Caddy forward proxy for naiveproxy
   --replace github.com/quic-go/quic-go=github.com/quic-go/quic-go@v0.40.0
   ```
 
-  需要注意 klzgrad/forwardproxy 和 quic-go/quic-go 的版本
+  需要注意 [golang/go](https://github.com/golang/go) klzgrad/forwardproxy quic-go/quic-go 的版本
