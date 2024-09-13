@@ -18,9 +18,11 @@ Caddy forward proxy for naiveproxy
 
   在 https://github.com/klzgrad/naiveproxy/releases 下载指定版本 Source code 到本地，例如将Source code 解压至 naive 文件夹内
 
+  编译 v2.7.x，需要注意 quic-go 的版本
+
   ```bash
   CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
   xcaddy build v2.7.0 --output build/caddybuild/caddy-forwardproxy-linux-amd64 \
-  --replace github.com/quic-go/quic-go=github.com/quic-go/quic-go@v0.41.0 \
-  --replace github.com/caddyserver/forwardproxy=./naive
+  --with github.com/caddyserver/forwardproxy=./naive \
+  --replace github.com/quic-go/quic-go=github.com/quic-go/quic-go@v0.40.0
   ```
