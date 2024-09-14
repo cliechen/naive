@@ -25,7 +25,7 @@ Caddy forward proxy for naiveproxy
 
   ```bash
   CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-  xcaddy build v2.7.0 --output build/caddybuild/caddy-forwardproxy-linux-amd64 \
+  xcaddy build v2.7.0 --output build/caddy-forwardproxy-linux-amd64 \
   --with github.com/caddyserver/forwardproxy=./naive \
   --replace github.com/quic-go/quic-go=github.com/quic-go/quic-go@v0.40.0
   ```
