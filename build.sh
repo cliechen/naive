@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 
+caddy_version=
+
 # Error handling function
 handle_error() {
   echo "$1"
@@ -68,7 +70,7 @@ cross_compile_caddy() {
 
     # Set CGO_ENABLED and environment variables for xcaddy build
     CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH GOARM=$GOARM \
-      xcaddy build --output "$XCADDY_OUT" \
+      xcaddy build "${caddy_version}" --output "$XCADDY_OUT" \
       --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive ||
       echo "Failed to build Caddy for $GOOS/$GOARCH/$GOARM. Skipping."
 
