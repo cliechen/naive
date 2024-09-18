@@ -4,7 +4,7 @@
 
 English / [简体中文](README_ZH.md)
 
-Caddy forward proxy for [naiveproxy](https://github.com/klzgrad/naiveproxy)
+[Caddy](https://github.com/caddyserver/caddy) [forward proxy](https://github.com/caddyserver/forwardproxy) for [naiveproxy](https://github.com/klzgrad/naiveproxy)
 
 <p>
 <a href="https://www.gnu.org/licenses/gpl-3.0.html"><img src="https://img.shields.io/github/license/jonssonyan/caddy-forwardproxy" alt="License: GPL-3.0"></a>
