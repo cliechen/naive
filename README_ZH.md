@@ -2,7 +2,7 @@
 
 <h1 align="center">Caddy forward proxy</h1>
 
-English / [简体中文](README_ZH.md)
+[English](README.md) / 简体中文
 
 Caddy forward proxy for [naiveproxy](https://github.com/klzgrad/naiveproxy)
 
@@ -45,14 +45,14 @@ Caddy forward proxy for [naiveproxy](https://github.com/klzgrad/naiveproxy)
 
   需要注意 [golang/go](https://github.com/golang/go) klzgrad/forwardproxy quic-go/quic-go 的版本
 
-## Other
+## 其他
 
-you can contact me at YouTube: https://www.youtube.com/@jonssonyan
+你可以在 YouTube 上关注我: https://www.youtube.com/@jonssonyan
 
-If this project is helpful to you, you can buy me a cup of coffee.
+如果这个项目对你有帮助，你可以请我喝杯咖啡:
 
-<img src="https://github.com/jonssonyan/install-script/assets/46235235/cce90c48-27d3-492c-af3e-468b656bdd06" width="150" alt="Wechat sponsor code" title="Wechat sponsor code"/>
+<img src="https://github.com/jonssonyan/install-script/assets/46235235/cce90c48-27d3-492c-af3e-468b656bdd06" width="150" alt="微信赞赏码" title="微信赞赏码"/>
 
-## License
+## 开源协议
 
 [GPL-3.0](LICENSE)
