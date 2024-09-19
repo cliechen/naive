@@ -5,13 +5,13 @@
   "logging": {
     "sink": {
       "writer": {
-        "output": "discard"
+        "output": "stderr"
       }
     },
     "logs": {
       "default": {
         "writer": {
-          "output": "discard"
+          "output": "stderr"
         }
       }
     }
