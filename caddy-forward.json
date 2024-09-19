@@ -21,7 +21,7 @@
       "servers": {
         "srv0": {
           "listen": [
-            ":${your_port}"
+            ":8080"
           ],
           "routes": [
             {
@@ -45,7 +45,7 @@
                       "match": [
                         {
                           "host": [
-                            "${your_domain}"
+                            "your_domain.com"
                           ]
                         }
                       ],
@@ -70,7 +70,7 @@
             {
               "match": {
                 "sni": [
-                  "${your_domain}"
+                  "your_domain.com"
                 ]
               }
             }
@@ -85,8 +85,8 @@
       "certificates": {
         "load_files": [
           {
-            "certificate": "${crt_path}",
-            "key": "${key_path}"
+            "certificate": "/path/to/your_domain.crt",
+            "key": "/path/to/your_domain.key"
           }
         ]
       }
