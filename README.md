@@ -47,6 +47,8 @@ English / [简体中文](README_ZH.md)
 
 ## Other
 
+Telegram Channel: https://t.me/jonssonyan_channel
+
 you can contact me at YouTube: https://www.youtube.com/@jonssonyan
 
 If this project is helpful to you, you can buy me a cup of coffee.

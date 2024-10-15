@@ -47,6 +47,8 @@
 
 ## 其他
 
+Telegram Channel: https://t.me/jonssonyan_channel
+
 你可以在 YouTube 上关注我: https://www.youtube.com/@jonssonyan
 
 如果这个项目对你有帮助，你可以请我喝杯咖啡:
