@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  h-ui:
+    image: jonssonyan/naive
+    container_name: naive
+    restart: always
+    network_mode: host
+    volumes:
+      - /naive:/naive
+    environment:
+      TZ: Asia/Shanghai
