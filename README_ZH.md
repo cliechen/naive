@@ -16,12 +16,26 @@ for [naiveproxy](https://github.com/klzgrad/naiveproxy)
 
 </div>
 
+## 建议系统
+
+系统: CentOS 8+/Ubuntu 20+/Debian 11+
+
+CPU: x86_64/amd64 arm64/aarch64
+
+内存: ≥ 128MB
+
 ## 部署
 
 安装最新版
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/install.sh)
+```
+
+安装[自定义版本](https://github.com/jonssonyan/naive/releases)
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/install.sh) v0.0.1
 ```
 
 ## 性能优化

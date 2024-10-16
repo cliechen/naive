@@ -16,12 +16,26 @@ for [naiveproxy](https://github.com/klzgrad/naiveproxy)
 
 </div>
 
+## Recommended OS
+
+OS: CentOS 8+/Ubuntu 20+/Debian 11+
+
+CPU: x86_64/amd64 arm64/aarch64
+
+Memory: ≥ 128MB
+
 ## Deployment
 
 Install Latest Version
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/install.sh)
+```
+
+Install [Custom Version](https://github.com/jonssonyan/naive/releases)
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/install.sh) v0.0.1
 ```
 
 ## Performance Optimization
