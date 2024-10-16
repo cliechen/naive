@@ -15,8 +15,18 @@ init_var() {
   NAIVE_DATA_DOCKER="/naive/"
   NAIVE_DATA_SYSTEMD="/usr/local/naive/"
 
+  naive_config_docker="/naive/naive.json"
+  naive_config_systemd="/usr/local/naive/naive.json"
+
+  naive_domain=""
+  naive_email=""
+  naive_crt=""
+  naive_key=""
+
   naive_port=444
-  naive_time_zone=Asia/Shanghai
+  naive_username="sysadmin"
+  naive_password="sysadmin"
+  naive_auth=""
 }
 
 echo_content() {
@@ -179,3 +189,83 @@ install_docker() {
     echo_content skyBlue "---> Docker is already installed"
   fi
 }
+
+set_naive() {
+  cat >${naive_config_systemd} <<EOF
+
+EOF
+}
+
+install_naive_systemd() {
+  if systemctl status naive &>/dev/null; then
+    echo_content skyBlue "---> naive is already installed"
+    exit 0
+  fi
+
+  echo_content green "---> Install naive"
+  mkdir -p ${NAIVE_DATA_SYSTEMD}
+  mkdir -p ${NAIVE_DATA_SYSTEMD}/dist/
+
+  read -r -p "Please enter the port of naive (default: 444): " naive_port
+  [[ -z "${naive_port}" ]] && naive_port="444"
+
+  read -r -p "Please enter the domain of naive: " naive_domain
+  read -r -p "Please enter the crt path of naive: " naive_crt
+  read -r -p "Please enter the key path of naive: " naive_key
+
+  read -r -p "Please enter the username of naive (default: sysadmin): " naive_username
+  [[ -z "${naive_username}" ]] && naive_username="sysadmin"
+  read -r -p "Please enter the password of naive (default: sysadmin): " naive_password
+  [[ -z "${naive_password}" ]] && naive_password="sysadmin"
+  naive_auth=$(echo -n "${naive_username}:${naive_password}" | base64 | base64)
+
+  set_naive
+
+  bin_url=https://github.com/jonssonyan/naive/releases/latest/download/naive-linux-${get_arch}
+  if [[ "latest" != "${naive_systemd_version}" ]]; then
+    bin_url=https://github.com/jonssonyan/naive/releases/download/${naive_systemd_version}/naive-linux-${get_arch}
+  fi
+
+  curl -fsSL "${bin_url}" -o /usr/local/naive/naive &&
+    chmod +x /usr/local/naive/naive &&
+    curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/naive.service -o /etc/systemd/system/naive.service &&
+    sed -i "s|^ExecStart=.*|ExecStart=/usr/local/naive/naive run --config ${naive_config_systemd}|" "/etc/systemd/system/naive.service" &&
+    systemctl daemon-reload &&
+    systemctl enable naive &&
+    systemctl restart naive
+  echo_content skyBlue "---> naive install successful"
+}
+
+main() {
+  cd "$HOME" || exit 0
+  init_var
+  check_sys
+  install_depend
+  clear
+  echo_content red "\n=============================================================="
+  echo_content skyBlue "Recommended OS: CentOS 8+/Ubuntu 20+/Debian 11+"
+  echo_content skyBlue "Description: Quick Installation of naive"
+  echo_content skyBlue "Author: jonssonyan <https://jonssonyan.com>"
+  echo_content skyBlue "Github: https://github.com/jonssonyan/naive"
+  echo_content red "\n=============================================================="
+  echo_content yellow "1. Install naive (systemd)"
+  echo_content yellow "2. Upgrade naive (systemd)"
+  echo_content yellow "3. Uninstall naive (systemd)"
+  read -r -p "Please choose: " input_option
+  case ${input_option} in
+  1)
+    install_naive_systemd
+    ;;
+  2)
+    upgrade_naive_systemd
+    ;;
+  3)
+    uninstall_naive_systemd
+    ;;
+  *)
+    echo_content red "No such option"
+    ;;
+  esac
+}
+
+main
