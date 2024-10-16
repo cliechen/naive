@@ -4,8 +4,7 @@
 
 English / [简体中文](README_ZH.md)
 
-[Caddy](https://github.com/caddyserver/caddy) [forward proxy](https://github.com/caddyserver/forwardproxy)
-for [naiveproxy](https://github.com/klzgrad/naiveproxy)
+[Caddy](https://github.com/caddyserver/caddy) with [forward proxy](https://github.com/klzgrad/forwardproxy/tree/naive)
 
 <p>
 <a href="https://www.gnu.org/licenses/gpl-3.0.html"><img src="https://img.shields.io/github/license/jonssonyan/naive" alt="License: GPL-3.0"></a>
@@ -26,6 +25,8 @@ Memory: ≥ 128MB
 
 ## Deployment
 
+### Quick Install (Recommended)
+
 Install Latest Version
 
 ```bash
@@ -37,6 +38,40 @@ Install [Custom Version](https://github.com/jonssonyan/naive/releases)
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/install.sh) v0.0.1
 ```
+
+### systemd
+
+Executable files: https://github.com/jonssonyan/naive/releases
+
+```bash
+mkdir -p /usr/local/naive/
+curl -fsSL https://github.com/jonssonyan/naive/releases/latest/download/naive-linux-amd64 -o /usr/local/naive/naive && chmod +x /usr/local/naive/naive
+curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/naive.service -o /etc/systemd/system/naive.service
+# Create a new configuration file naive.json
+sed -i "s|^ExecStart=.*|ExecStart=/usr/local/naive/naive run --config naive.json|" "/etc/systemd/system/naive.service"
+systemctl daemon-reload
+systemctl enable naive
+systemctl restart naive
+```
+
+Uninstall
+
+```bash
+systemctl stop naive
+rm -rf /etc/systemd/system/naive.service /usr/local/naive/
+```
+
+### Docker
+
+1. Install Docker
+
+   https://docs.docker.com/engine/install/
+
+   ```bash
+   bash <(curl -fsSL https://get.docker.com)
+   ```
+
+2. Start a container
 
 ## Performance Optimization
 
@@ -90,7 +125,7 @@ you can contact me at YouTube: https://www.youtube.com/@jonssonyan
 
 If this project is helpful to you, you can buy me a cup of coffee.
 
-<img src="https://github.com/jonssonyan/install-script/assets/46235235/cce90c48-27d3-492c-af3e-468b656bdd06" width="150" alt="Wechat sponsor code" title="Wechat sponsor code"/>
+<img src="https://jonssonyan.com/images/zsm.jpg" width="150" alt="Wechat sponsor code" title="Wechat sponsor code"/>
 
 ## License
 

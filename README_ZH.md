@@ -4,8 +4,7 @@
 
 [English](README.md) / 简体中文
 
-[Caddy](https://github.com/caddyserver/caddy) [forward proxy](https://github.com/caddyserver/forwardproxy)
-for [naiveproxy](https://github.com/klzgrad/naiveproxy)
+[Caddy](https://github.com/caddyserver/caddy) with [forward proxy](https://github.com/klzgrad/forwardproxy/tree/naive)
 
 <p>
 <a href="https://www.gnu.org/licenses/gpl-3.0.html"><img src="https://img.shields.io/github/license/jonssonyan/naive" alt="License: GPL-3.0"></a>
@@ -26,6 +25,8 @@ CPU: x86_64/amd64 arm64/aarch64
 
 ## 部署
 
+### 快速安装 (推荐)
+
 安装最新版
 
 ```bash
@@ -37,6 +38,40 @@ bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/instal
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/install.sh) v0.0.1
 ```
+
+### systemd
+
+下载可执行文件: https://github.com/jonssonyan/naive/releases
+
+```bash
+mkdir -p /usr/local/naive/
+curl -fsSL https://github.com/jonssonyan/naive/releases/latest/download/naive-linux-amd64 -o /usr/local/naive/naive && chmod +x /usr/local/naive/naive
+curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/naive.service -o /etc/systemd/system/naive.service
+# 新建配置文件 naive.json
+sed -i "s|^ExecStart=.*|ExecStart=/usr/local/naive/naive run --config naive.json|" "/etc/systemd/system/naive.service"
+systemctl daemon-reload
+systemctl enable naive
+systemctl restart naive
+```
+
+卸载
+
+```bash
+systemctl stop naive
+rm -rf /etc/systemd/system/naive.service /usr/local/naive/
+```
+
+### 容器部署
+
+1. 安装 Docker
+
+   https://docs.docker.com/engine/install/
+
+   ```bash
+   bash <(curl -fsSL https://get.docker.com)
+   ```
+
+2. 启动容器
 
 ## 性能优化
 
@@ -90,7 +125,7 @@ Telegram Channel: https://t.me/jonssonyan_channel
 
 如果这个项目对你有帮助，你可以请我喝杯咖啡:
 
-<img src="https://github.com/jonssonyan/install-script/assets/46235235/cce90c48-27d3-492c-af3e-468b656bdd06" width="150" alt="微信赞赏码" title="微信赞赏码"/>
+<img src="https://jonssonyan.com/images/zsm.jpg" width="150" alt="微信赞赏码" title="微信赞赏码"/>
 
 ## 开源协议
 
