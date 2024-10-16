@@ -16,7 +16,7 @@ init_var() {
   NAIVE_DATA_DOCKER="/naive/"
   NAIVE_DATA_SYSTEMD="/usr/local/naive/"
 
-  naive_port=8081
+  naive_port=444
   naive_time_zone=Asia/Shanghai
 }
 
