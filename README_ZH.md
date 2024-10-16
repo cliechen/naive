@@ -18,32 +18,10 @@ for [naiveproxy](https://github.com/klzgrad/naiveproxy)
 
 ## 部署
 
-### 快速安装 (推荐)
-
 安装最新版
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/h-ui/main/install.sh)
-```
-
-### 容器部署
-
-1. 安装 Docker
-
-   https://docs.docker.com/engine/install/
-
-   ```bash
-   bash <(curl -fsSL https://get.docker.com)
-   ```
-
-2. 启动容器
-
-卸载
-
-```bash
-docker rm -f h-ui
-docker rmi jonssonyan/h-ui
-rm -rf /h-ui
 ```
 
 ## 性能优化

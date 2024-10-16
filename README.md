@@ -18,32 +18,10 @@ for [naiveproxy](https://github.com/klzgrad/naiveproxy)
 
 ## Deployment
 
-### Quick Install (Recommended)
-
 Install Latest Version
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/caddy-forwardproxy/main/install.sh)
-```
-
-### Docker
-
-1. Install Docker
-
-   https://docs.docker.com/engine/install/
-
-   ```bash
-   bash <(curl -fsSL https://get.docker.com)
-   ```
-
-2. Start a container
-
-Uninstall
-
-```bash
-docker rm -f h-ui
-docker rmi jonssonyan/h-ui
-rm -rf /h-ui
 ```
 
 ## Performance Optimization
