@@ -36,7 +36,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/instal
 Install [Custom Version](https://github.com/jonssonyan/naive/releases)
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/install.sh) v0.0.1
+bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/install.sh) v2.7.6
 ```
 
 ### systemd
