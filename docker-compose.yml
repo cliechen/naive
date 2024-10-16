@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  h-ui:
+  naive:
     image: jonssonyan/naive
     container_name: naive
     restart: always
