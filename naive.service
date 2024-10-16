@@ -1,0 +1,12 @@
+[Unit]
+Description=naive Service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/local/naive/
+ExecStart=/usr/local/naive/naive
+
+[Install]
+WantedBy=multi-user.target

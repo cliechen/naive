@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1 align="center">Caddy forward proxy</h1>
+<h1 align="center">NaiveProxy Server</h1>
 
 [English](README.md) / 简体中文
 
@@ -8,10 +8,10 @@
 for [naiveproxy](https://github.com/klzgrad/naiveproxy)
 
 <p>
-<a href="https://www.gnu.org/licenses/gpl-3.0.html"><img src="https://img.shields.io/github/license/jonssonyan/caddy-forwardproxy" alt="License: GPL-3.0"></a>
-<a href="https://github.com/jonssonyan/caddy-forwardproxy/stargazers"><img src="https://img.shields.io/github/stars/jonssonyan/caddy-forwardproxy" alt="GitHub stars"></a>
-<a href="https://github.com/jonssonyan/caddy-forwardproxy/forks"><img src="https://img.shields.io/github/forks/jonssonyan/caddy-forwardproxy" alt="GitHub forks"></a>
-<a href="https://github.com/jonssonyan/caddy-forwardproxy/releases"><img src="https://img.shields.io/github/v/release/jonssonyan/caddy-forwardproxy" alt="GitHub release"></a>
+<a href="https://www.gnu.org/licenses/gpl-3.0.html"><img src="https://img.shields.io/github/license/jonssonyan/naive" alt="License: GPL-3.0"></a>
+<a href="https://github.com/jonssonyan/naive/stargazers"><img src="https://img.shields.io/github/stars/jonssonyan/naive" alt="GitHub stars"></a>
+<a href="https://github.com/jonssonyan/naive/forks"><img src="https://img.shields.io/github/forks/jonssonyan/naive" alt="GitHub forks"></a>
+<a href="https://github.com/jonssonyan/naive/releases"><img src="https://img.shields.io/github/v/release/jonssonyan/naive" alt="GitHub release"></a>
 </p>
 
 </div>
@@ -61,7 +61,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/h-ui/main/install
 
   ```bash
   CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-  xcaddy build v2.7.0 --output build/caddy-forwardproxy-linux-amd64 \
+  xcaddy build v2.7.0 --output build/naive-linux-amd64 \
   --with github.com/caddyserver/forwardproxy=./naive \
   --replace github.com/quic-go/quic-go=github.com/quic-go/quic-go@v0.40.0
   ```

@@ -21,7 +21,7 @@
       "servers": {
         "srv0": {
           "listen": [
-            ":8080"
+            ":your_port"
           ],
           "routes": [
             {
@@ -32,8 +32,9 @@
                     {
                       "handle": [
                         {
-                          "auth_pass_deprecated": "${your_password}",
-                          "auth_user_deprecated": "${your_username}",
+                          "auth_credentials": [
+                            "your_username:your_password"
+                          ],
                           "handler": "forward_proxy",
                           "hide_ip": true,
                           "hide_via": true,
@@ -52,7 +53,7 @@
                       "handle": [
                         {
                           "handler": "file_server",
-                          "root": "/caddy-forwardproxy/dist/",
+                          "root": "/your_file_path/dist/",
                           "index_names": [
                             "index.html",
                             "index.htm"

@@ -37,25 +37,25 @@ echo_content() {
 }
 
 main() {
-  echo_content skyBlue "start build caddy-forwardproxy CPU：${arch_arr}"
+  echo_content skyBlue "start build naive CPU：${arch_arr}"
 
   if [[ ${version} != "latest" ]]; then
-    docker buildx build -t jonssonyan/caddy-forwardproxy:${version} --platform ${arch_arr} --push .
+    docker buildx build -t jonssonyan/naive:${version} --platform ${arch_arr} --push .
     if [[ "$?" == "0" ]]; then
-      echo_content green "caddy-forwardproxy-linux Version：${version} CPU：${arch_arr} build success"
+      echo_content green "naive-linux Version：${version} CPU：${arch_arr} build success"
     else
-      echo_content red "caddy-forwardproxy-linux Version：${version} CPU：${arch_arr} build failed"
+      echo_content red "naive-linux Version：${version} CPU：${arch_arr} build failed"
     fi
   fi
 
-  docker buildx build -t jonssonyan/caddy-forwardproxy:latest --platform ${arch_arr} --push .
+  docker buildx build -t jonssonyan/naive:latest --platform ${arch_arr} --push .
   if [[ "$?" == "0" ]]; then
-    echo_content green "caddy-forwardproxy Version：latest CPU：${arch_arr} build success"
+    echo_content green "naive Version：latest CPU：${arch_arr} build success"
   else
-    echo_content red "caddy-forwardproxy-linux Version：latest CPU：${arch_arr} build failed"
+    echo_content red "naive-linux Version：latest CPU：${arch_arr} build failed"
   fi
 
-  echo_content skyBlue "caddy-forwardproxy CPU：${arch_arr} build finished"
+  echo_content skyBlue "naive CPU：${arch_arr} build finished"
 }
 
 init_var

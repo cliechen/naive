@@ -61,7 +61,7 @@ cross_compile_caddy() {
     IFS="/" read -r GOOS GOARCH GOARM <<<"$PLATFORM"
 
     # Set output file name
-    XCADDY_OUT="build/caddy-forwardproxy-${GOOS}-${GOARCH}"
+    XCADDY_OUT="build/naive-${GOOS}-${GOARCH}"
     if [[ "$GOARCH" == "arm" ]]; then
       XCADDY_OUT="${XCADDY_OUT}v${GOARM}"
     fi
