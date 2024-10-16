@@ -21,7 +21,7 @@
       "servers": {
         "srv0": {
           "listen": [
-            ":your_port"
+            ":${your_port}"
           ],
           "routes": [
             {
@@ -33,7 +33,7 @@
                       "handle": [
                         {
                           "auth_credentials": [
-                            "your_username:your_password"
+                            "${your_username}:${your_password}"
                           ],
                           "handler": "forward_proxy",
                           "hide_ip": true,
@@ -46,14 +46,14 @@
                       "match": [
                         {
                           "host": [
-                            "your_domain.com"
+                            "${your_domain}"
                           ]
                         }
                       ],
                       "handle": [
                         {
                           "handler": "file_server",
-                          "root": "/your_file_path/dist/",
+                          "root": "${your_file_dist}",
                           "index_names": [
                             "index.html",
                             "index.htm"
@@ -71,7 +71,7 @@
             {
               "match": {
                 "sni": [
-                  "your_domain.com"
+                  "${your_domain}"
                 ]
               }
             }
@@ -84,10 +84,19 @@
     },
     "tls": {
       "certificates": {
-        "load_files": [
+        "automate": [
+          "${your_domain}"
+        ]
+      },
+      "automation": {
+        "policies": [
           {
-            "certificate": "/path/to/your_domain.crt",
-            "key": "/path/to/your_domain.key"
+            "issuers": [
+              {
+                "module": "${ssl_module}",
+                "email": "${your_email}"
+              }
+            ]
           }
         ]
       }
