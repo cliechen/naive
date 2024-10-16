@@ -4,7 +4,8 @@
 
 [English](README.md) / 简体中文
 
-[Caddy](https://github.com/caddyserver/caddy) [forward proxy](https://github.com/caddyserver/forwardproxy) for [naiveproxy](https://github.com/klzgrad/naiveproxy)
+[Caddy](https://github.com/caddyserver/caddy) [forward proxy](https://github.com/caddyserver/forwardproxy)
+for [naiveproxy](https://github.com/klzgrad/naiveproxy)
 
 <p>
 <a href="https://www.gnu.org/licenses/gpl-3.0.html"><img src="https://img.shields.io/github/license/jonssonyan/caddy-forwardproxy" alt="License: GPL-3.0"></a>
@@ -14,6 +15,50 @@
 </p>
 
 </div>
+
+## 部署
+
+### 快速安装 (推荐)
+
+安装最新版
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/h-ui/main/install.sh)
+```
+
+### 容器部署
+
+1. 安装 Docker
+
+   https://docs.docker.com/engine/install/
+
+   ```bash
+   bash <(curl -fsSL https://get.docker.com)
+   ```
+
+2. 启动容器
+
+卸载
+
+```bash
+docker rm -f h-ui
+docker rmi jonssonyan/h-ui
+rm -rf /h-ui
+```
+
+## 性能优化
+
+- 定时重启服务器
+
+    ```bash
+    0 4 * * * /sbin/reboot
+    ```
+
+- 安装网络加速
+    - [TCP Brutal](https://github.com/apernet/tcp-brutal) (推荐)
+    - [teddysun/across#bbrsh](https://github.com/teddysun/across#bbrsh)
+    - [Chikage0o0/Linux-NetSpeed](https://github.com/ylx2016/Linux-NetSpeed)
+    - [ylx2016/Linux-NetSpeed](https://github.com/ylx2016/Linux-NetSpeed)
 
 ## 构建
 
