@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
-export PATH
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 
 init_var() {
   ECHO_TYPE="echo -e"
@@ -42,9 +41,9 @@ main() {
   if [[ ${version} != "latest" ]]; then
     docker buildx build -t jonssonyan/naive:${version} --platform ${arch_arr} --push .
     if [[ "$?" == "0" ]]; then
-      echo_content green "naive-linux Version：${version} CPU：${arch_arr} build success"
+      echo_content green "naive Version：${version} CPU：${arch_arr} build success"
     else
-      echo_content red "naive-linux Version：${version} CPU：${arch_arr} build failed"
+      echo_content red "naive Version：${version} CPU：${arch_arr} build failed"
     fi
   fi
 
@@ -52,7 +51,7 @@ main() {
   if [[ "$?" == "0" ]]; then
     echo_content green "naive Version：latest CPU：${arch_arr} build success"
   else
-    echo_content red "naive-linux Version：latest CPU：${arch_arr} build failed"
+    echo_content red "naive Version：latest CPU：${arch_arr} build failed"
   fi
 
   echo_content skyBlue "naive CPU：${arch_arr} build finished"
