@@ -2,8 +2,8 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-cfp_systemd_version="${1:-latest}"
-cfp_docker_version=":${cfp_systemd_version#v}"
+naive_systemd_version="${1:-latest}"
+naive_docker_version=":${naive_systemd_version#v}"
 
 init_var() {
   ECHO_TYPE="echo -e"

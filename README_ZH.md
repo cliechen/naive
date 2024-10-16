@@ -21,7 +21,7 @@ for [naiveproxy](https://github.com/klzgrad/naiveproxy)
 安装最新版
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/h-ui/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/install.sh)
 ```
 
 ## 性能优化
