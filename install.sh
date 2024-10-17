@@ -1506,9 +1506,9 @@ upgrade_naive_docker() {
   docker rm -f naive
   docker rmi jonssonyan/naive
 
-  pull_version=""
+  pull_version=":latest"
   if ! version_ge "${current_version}" "v2.7.6"; then
-    pull_version="2.7.5"
+    pull_version=":2.7.5"
   fi
 
   docker pull jonssonyan/naive"${pull_version}" &&
