@@ -773,8 +773,7 @@ set_naive() {
 }
 
 install_naive_systemd() {
-  systemctl status naive.service >/dev/null 2>&1
-  if [[ "$?" != "4" ]]; then
+  if systemctl list-units --type=service --all | grep -q 'naive.service'; then
     echo_content skyBlue "---> naive is already installed"
     exit 0
   fi
@@ -827,8 +826,7 @@ EOF
 }
 
 upgrade_naive_systemd() {
-  systemctl status naive.service >/dev/null 2>&1
-  if [[ "$?" == "4" ]]; then
+  if ! systemctl list-units --type=service --all | grep -q 'naive.service'; then
     echo_content red "---> naive not installed"
     exit 0
   fi
@@ -857,8 +855,7 @@ upgrade_naive_systemd() {
 }
 
 uninstall_naive_systemd() {
-  systemctl status naive.service >/dev/null 2>&1
-  if [[ "$?" == "4" ]]; then
+  if ! systemctl list-units --type=service --all | grep -q 'naive.service'; then
     echo_content red "---> naive not installed"
     exit 0
   fi
@@ -870,7 +867,8 @@ uninstall_naive_systemd() {
   systemctl disable naive.service &&
     rm -f /etc/systemd/system/naive.service &&
     systemctl daemon-reload &&
-    rm -rf /usr/local/naive/
+    rm -rf /usr/local/naive/ &&
+    systemctl reset-failed
   echo_content skyBlue "---> naive uninstall successful"
 }
 
