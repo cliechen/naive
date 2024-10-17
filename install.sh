@@ -1515,6 +1515,7 @@ upgrade_naive_docker() {
     docker run -d \
       --name naive --restart always \
       --network=host \
+      -v /naive/html/:/naive/html/ \
       -v /naive/config/:/naive/config/ \
       jonssonyan/naive"${pull_version}" \
       ./naive run --config ${naive_config_docker}
