@@ -74,7 +74,7 @@ rm -rf /etc/systemd/system/naive.service /usr/local/naive/
 
 2. Start a container
 
-  Create a new configuration file naive.json, examples: [naive.json](naive.json)
+   Create a new configuration file naive.json, examples: [naive.json](naive.json)
 
 ## Performance Optimization
 

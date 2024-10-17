@@ -574,6 +574,18 @@ uninstall_naive_systemd() {
   echo_content skyBlue "---> naive uninstall successful"
 }
 
+install_naive_docker(){
+
+}
+
+upgrade_naive_docker(){
+
+}
+
+uninstall_naive_docker(){
+
+}
+
 main() {
   cd "$HOME" || exit 0
   init_var
@@ -599,6 +611,16 @@ main() {
     ;;
   3)
     uninstall_naive_systemd
+    ;;
+  4)
+    install_docker
+    install_naive_docker
+    ;;
+  5)
+    upgrade_naive_docker
+    ;;
+  6)
+    uninstall_naive_docker
     ;;
   *)
     echo_content red "No such option"
