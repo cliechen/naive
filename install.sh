@@ -742,6 +742,15 @@ EOF
 }
 
 set_naive() {
+  read -r -p "Please enter the port of naive (default: 444): " naive_port
+  [[ -z "${naive_port}" ]] && naive_port="444"
+
+  read -r -p "Please enter the username of naive (default: sysadmin): " naive_username
+  [[ -z "${naive_username}" ]] && naive_username="sysadmin"
+  read -r -p "Please enter the password of naive (default: sysadmin): " naive_password
+  [[ -z "${naive_password}" ]] && naive_password="sysadmin"
+  naive_auth=$(echo -n "${naive_username}:${naive_password}" | base64 | base64)
+
   while read -r -p "Please select the management certificate method(1/auto 2/custom default: 1): " naive_ssl_method; do
     if [[ -z "${naive_ssl_method}" || ${naive_ssl_method} == 1 ]]; then
       if [[ $(version_ge "${naive_systemd_version}" "v2.7.6") ]]; then
@@ -798,15 +807,6 @@ Commercial support is available at
 </body>
 </html>
 EOF
-
-  read -r -p "Please enter the port of naive (default: 444): " naive_port
-  [[ -z "${naive_port}" ]] && naive_port="444"
-
-  read -r -p "Please enter the username of naive (default: sysadmin): " naive_username
-  [[ -z "${naive_username}" ]] && naive_username="sysadmin"
-  read -r -p "Please enter the password of naive (default: sysadmin): " naive_password
-  [[ -z "${naive_password}" ]] && naive_password="sysadmin"
-  naive_auth=$(echo -n "${naive_username}:${naive_password}" | base64 | base64)
 
   set_naive
 
@@ -1132,6 +1132,15 @@ EOF
 }
 
 set_naive_docker() {
+  read -r -p "Please enter the port of naive (default: 444): " naive_port
+  [[ -z "${naive_port}" ]] && naive_port="444"
+
+  read -r -p "Please enter the username of naive (default: sysadmin): " naive_username
+  [[ -z "${naive_username}" ]] && naive_username="sysadmin"
+  read -r -p "Please enter the password of naive (default: sysadmin): " naive_password
+  [[ -z "${naive_password}" ]] && naive_password="sysadmin"
+  naive_auth=$(echo -n "${naive_username}:${naive_password}" | base64 | base64)
+
   while read -r -p "Please select the management certificate method(1/auto 2/custom default: 1): " naive_ssl_method; do
     if [[ -z "${naive_ssl_method}" || ${naive_ssl_method} == 1 ]]; then
       set_naive_docker_auto
@@ -1153,16 +1162,34 @@ install_naive_docker() {
 
   echo_content green "---> Install naive"
   mkdir -p ${NAIVE_DATA_DOCKER}
+  mkdir -p ${NAIVE_DATA_SYSTEMD}html/
   mkdir -p ${NAIVE_DATA_DOCKER}config/
 
-  read -r -p "Please enter the port of naive (default: 444): " naive_port
-  [[ -z "${naive_port}" ]] && naive_port="444"
+  cat >${NAIVE_DATA_DOCKER}html/index.html <<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
 
-  read -r -p "Please enter the username of naive (default: sysadmin): " naive_username
-  [[ -z "${naive_username}" ]] && naive_username="sysadmin"
-  read -r -p "Please enter the password of naive (default: sysadmin): " naive_password
-  [[ -z "${naive_password}" ]] && naive_password="sysadmin"
-  naive_auth=$(echo -n "${naive_username}:${naive_password}" | base64 | base64)
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+EOF
 
   set_naive_docker
 
@@ -1170,6 +1197,7 @@ install_naive_docker() {
     docker run -d \
       --name naive --restart always \
       --network=host \
+      -v /naive/html/:/naive/html/ \
       -v /naive/config/:/naive/config/ \
       jonssonyan/naive"${naive_docker_version}" \
       ./naive run --config ${naive_config_docker}
