@@ -76,6 +76,25 @@ rm -rf /etc/systemd/system/naive.service /usr/local/naive/
 
    新建配置文件 naive.json, 示例: [naive.json](naive.json)
 
+   ```bash
+   docker pull jonssonyan/naive
+
+   docker run -d \
+     --name naive --restart always \
+     --network=host \
+     -v /naive:/naive \
+     jonssonyan/naive \
+     ./naive run --config /naive/naive.json
+   ```
+
+卸载
+
+```bash
+docker rm -f naive
+docker rmi jonssonyan/naive
+rm -rf /naive
+```
+
 ## 性能优化
 
 - 定时重启服务器

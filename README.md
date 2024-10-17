@@ -76,6 +76,25 @@ rm -rf /etc/systemd/system/naive.service /usr/local/naive/
 
    Create a new configuration file naive.json, examples: [naive.json](naive.json)
 
+   ```bash
+   docker pull jonssonyan/naive
+
+   docker run -d \
+     --name naive --restart always \
+     --network=host \
+     -v /naive:/naive \
+     jonssonyan/naive \
+     ./naive run --config /naive/naive.json
+   ```
+
+Uninstall
+
+```bash
+docker rm -f naive
+docker rmi jonssonyan/naive
+rm -rf /naive
+```
+
 ## Performance Optimization
 
 - Scheduled server restart
