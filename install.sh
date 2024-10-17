@@ -65,6 +65,25 @@ can_connect() {
   fi
 }
 
+version_ge() {
+  local v1=${1#v}
+  local v2=${2#v}
+
+  local v1_parts=(${v1//./ })
+  local v2_parts=(${v2//./ })
+
+  for ((i = 0; i < 3; i++)); do
+    if ((${v1_parts[i]} < ${v2_parts[i]})); then
+      echo false
+      return 0
+    elif ((${v1_parts[i]} > ${v2_parts[i]})); then
+      echo true
+      return 0
+    fi
+  done
+  echo true
+}
+
 check_sys() {
   if [[ $(id -u) != "0" ]]; then
     echo_content red "You must be root to run this script"
@@ -329,6 +348,142 @@ set_naive_auto() {
 EOF
 }
 
+set_naive_auto_lt276() {
+  echo_content yellow "Tip: Please confirm that the domain name has been resolved to this machine, otherwise the installation may fail"
+  while read -r -p "Please enter your domain name (required): " naive_domain; do
+    if [[ -z "${naive_domain}" ]]; then
+      echo_content red "Domain name cannot be empty"
+    else
+      break
+    fi
+  done
+
+  read -r -p "Please enter your email (optional): " naive_email
+
+  while read -r -p "Please choose the way to apply for the certificate (1/acme 2/zerossl default: 1: " naive_ssl_type; do
+    if [[ -z "${naive_ssl_type}" || ${naive_ssl_type} == 1 ]]; then
+      naive_ssl="acme"
+      break
+    elif [[ ${naive_ssl_type} == 2 ]]; then
+      naive_ssl="zerossl"
+      break
+    else
+      echo_content red "Cannot enter other characters except 1 and 2"
+    fi
+  done
+
+  cat >${naive_config_systemd} <<EOF
+{
+  "admin": {
+    "disabled": true
+  },
+  "logging": {
+    "sink": {
+      "writer": {
+        "output": "stderr"
+      }
+    },
+    "logs": {
+      "default": {
+        "writer": {
+          "output": "stderr"
+        }
+      }
+    }
+  },
+  "storage":{
+      "module":"file_system",
+      "root":"${NAIVE_DATA_SYSTEMD}file_system/"
+  },
+  "apps": {
+    "http": {
+      "servers": {
+        "srv0": {
+          "listen": [
+            ":${naive_port}"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "handle": [
+                        {
+                          "auth_pass_deprecated": "${naive_username}",
+                          "auth_user_deprecated": "${naive_password}",
+                          "handler": "forward_proxy",
+                          "hide_ip": true,
+                          "hide_via": true,
+                          "probe_resistance": {}
+                        }
+                      ]
+                    },
+                    {
+                      "match": [
+                        {
+                          "host": [
+                            "${naive_domain}"
+                          ]
+                        }
+                      ],
+                      "handle": [
+                        {
+                          "handler": "file_server",
+                          "root": "${NAIVE_DATA_SYSTEMD}html/",
+                          "index_names": [
+                            "index.html",
+                            "index.htm"
+                          ]
+                        }
+                      ],
+                      "terminal": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "tls_connection_policies": [
+            {
+              "match": {
+                "sni": [
+                  "${naive_domain}"
+                ]
+              }
+            }
+          ],
+          "automatic_https": {
+            "disable": true
+          }
+        }
+      }
+    },
+    "tls": {
+      "certificates": {
+        "automate": [
+          "${naive_domain}"
+        ]
+      },
+      "automation": {
+        "policies": [
+          {
+            "issuers": [
+              {
+                "module": "${naive_ssl}",
+                "email": "${naive_email}"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+EOF
+}
+
 set_naive_custom() {
   while read -r -p "Please enter your domain name (required): " naive_domain; do
     if [[ -z "${naive_domain}" ]]; then
@@ -458,13 +613,149 @@ set_naive_custom() {
 EOF
 }
 
+set_naive_custom_lt276() {
+  while read -r -p "Please enter your domain name (required): " naive_domain; do
+    if [[ -z "${naive_domain}" ]]; then
+      echo_content red "Domain name cannot be empty"
+    else
+      break
+    fi
+  done
+
+  while read -r -p "Please enter the crt path of naive (required): " naive_crt; do
+    if [[ -z "${naive_crt}" ]]; then
+      echo_content red "crt path cannot be empty"
+    else
+      break
+    fi
+  done
+
+  while read -r -p "Please enter the key path of naive (required): " naive_key; do
+    if [[ -z "${naive_key}" ]]; then
+      echo_content red "key path cannot be empty"
+    else
+      break
+    fi
+  done
+
+  cat >${naive_config_systemd} <<EOF
+{
+  "admin": {
+    "disabled": true
+  },
+  "logging": {
+    "sink": {
+      "writer": {
+        "output": "stderr"
+      }
+    },
+    "logs": {
+      "default": {
+        "writer": {
+          "output": "stderr"
+        }
+      }
+    }
+  },
+  "storage":{
+      "module":"file_system",
+      "root":"${NAIVE_DATA_SYSTEMD}file_system/"
+  },
+  "apps": {
+    "http": {
+      "servers": {
+        "srv0": {
+          "listen": [
+            ":${naive_port}"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "handle": [
+                        {
+                          "auth_pass_deprecated": "${naive_username}",
+                          "auth_user_deprecated": "${naive_password}",
+                          "handler": "forward_proxy",
+                          "hide_ip": true,
+                          "hide_via": true,
+                          "probe_resistance": {}
+                        }
+                      ]
+                    },
+                    {
+                      "match": [
+                        {
+                          "host": [
+                            "${naive_domain}"
+                          ]
+                        }
+                      ],
+                      "handle": [
+                        {
+                          "handler": "file_server",
+                          "root": "${NAIVE_DATA_SYSTEMD}html/",
+                          "index_names": [
+                            "index.html",
+                            "index.htm"
+                          ]
+                        }
+                      ],
+                      "terminal": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "tls_connection_policies": [
+            {
+              "match": {
+                "sni": [
+                  "${naive_domain}"
+                ]
+              }
+            }
+          ],
+          "automatic_https": {
+            "disable": true
+          }
+        }
+      }
+    },
+    "tls": {
+      "certificates": {
+        "load_files": [
+          {
+            "certificate": "${naive_crt}",
+            "key": "${naive_key}"
+          }
+        ]
+      }
+    }
+  }
+}
+EOF
+}
+
 set_naive() {
   while read -r -p "Please select the management certificate method(1/auto 2/custom default: 1): " naive_ssl_method; do
     if [[ -z "${naive_ssl_method}" || ${naive_ssl_method} == 1 ]]; then
-      set_naive_auto
+      if [[ ! $(version_ge "${naive_systemd_version}" "v2.7.6") ]]; then
+        set_naive_auto
+      else
+        set_naive_auto_lt276
+      fi
       break
     elif [[ ${naive_ssl_method} == 2 ]]; then
-      set_naive_custom
+      if [[ ! $(version_ge "${naive_systemd_version}" "v2.7.6") ]]; then
+        set_naive_custom
+      else
+        set_naive_custom_lt276
+      fi
       break
     else
       echo_content red "Cannot enter other characters except 1 and 2"
