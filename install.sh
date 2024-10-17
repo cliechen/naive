@@ -237,7 +237,7 @@ set_naive_auto() {
   },
   "storage":{
       "module":"file_system",
-      "root":"${NAIVE_DATA_SYSTEMD}file_system"
+      "root":"${NAIVE_DATA_SYSTEMD}file_system/"
   },
   "apps": {
     "http": {
@@ -276,7 +276,7 @@ set_naive_auto() {
                       "handle": [
                         {
                           "handler": "file_server",
-                          "root": "${NAIVE_DATA_SYSTEMD}html",
+                          "root": "${NAIVE_DATA_SYSTEMD}html/",
                           "index_names": [
                             "index.html",
                             "index.htm"
@@ -375,7 +375,7 @@ set_naive_custom() {
   },
   "storage":{
       "module":"file_system",
-      "root":"${NAIVE_DATA_SYSTEMD}file_system"
+      "root":"${NAIVE_DATA_SYSTEMD}file_system/"
   },
   "apps": {
     "http": {
@@ -414,7 +414,7 @@ set_naive_custom() {
                       "handle": [
                         {
                           "handler": "file_server",
-                          "root": "${NAIVE_DATA_SYSTEMD}html",
+                          "root": "${NAIVE_DATA_SYSTEMD}html/",
                           "index_names": [
                             "index.html",
                             "index.htm"
