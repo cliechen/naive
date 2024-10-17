@@ -15,7 +15,7 @@ init_var() {
   NAIVE_DATA_DOCKER="/naive/"
   NAIVE_DATA_SYSTEMD="/usr/local/naive/"
 
-  naive_config_docker="/naive/naive.json"
+  naive_config_docker="/naive/config/naive.json"
   naive_config_systemd="/usr/local/naive/naive.json"
 
   naive_ssl_method=1
@@ -878,7 +878,7 @@ install_naive_docker() {
     docker run -d \
       --name naive --restart always \
       --network=host \
-      -v /naive/cert/:/naive/cert/ \
+      -v /naive/config/:/naive/config/ \
       jonssonyan/naive"${naive_docker_version}" \
       ./naive run --config ${naive_config_docker}
   echo_content skyBlue "---> naive install successful"
@@ -909,7 +909,7 @@ upgrade_naive_docker() {
     docker run -d \
       --name naive --restart always \
       --network=host \
-      -v /naive/cert/:/naive/cert/ \
+      -v /naive/config/:/naive/config/ \
       jonssonyan/naive \
       ./naive run --config ${naive_config_docker}
   echo_content skyBlue "---> naive upgrade successful"

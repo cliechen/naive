@@ -82,7 +82,7 @@ rm -rf /etc/systemd/system/naive.service /usr/local/naive/
    docker run -d \
      --name naive --restart always \
      --network=host \
-     -v /naive/cert/:/naive/cert/ \
+     -v /naive/config/:/naive/config/ \
      jonssonyan/naive \
      ./naive run --config /naive/naive.json
    ```
