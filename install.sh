@@ -842,7 +842,13 @@ upgrade_naive_systemd() {
   if [[ $(systemctl is-active naive) == "active" ]]; then
     systemctl stop naive
   fi
-  curl -fsSL https://github.com/jonssonyan/naive/releases/latest/download/naive-linux-${get_arch} -o /usr/local/naive/naive &&
+
+  bin_url=https://github.com/jonssonyan/naive/releases/latest/download/naive-linux-${get_arch}
+  if [[ ! $(version_ge "${current_version}" "v2.7.6") ]]; then
+    bin_url=https://github.com/jonssonyan/naive/releases/download/v2.7.5/naive-linux-${get_arch}
+  fi
+
+  curl -fsSL "${bin_url}" -o /usr/local/naive/naive &&
     chmod +x /usr/local/naive/naive &&
     systemctl restart naive
   echo_content skyBlue "---> naive upgrade successful"
@@ -1193,7 +1199,7 @@ EOF
 
   set_naive_docker
 
-  docker pull jonssonyan/naive &&
+  docker pull jonssonyan/naive"${naive_docker_version}" &&
     docker run -d \
       --name naive --restart always \
       --network=host \
@@ -1225,12 +1231,17 @@ upgrade_naive_docker() {
   docker rm -f naive
   docker rmi jonssonyan/naive
 
-  docker pull jonssonyan/naive &&
+  pull_version=""
+  if [[ ! $(version_ge "${current_version}" "v2.7.6") ]]; then
+    pull_version="2.7.5"
+  fi
+
+  docker pull jonssonyan/naive"${pull_version}" &&
     docker run -d \
       --name naive --restart always \
       --network=host \
       -v /naive/config/:/naive/config/ \
-      jonssonyan/naive \
+      jonssonyan/naive"${pull_version}" \
       ./naive run --config ${naive_config_docker}
   echo_content skyBlue "---> naive upgrade successful"
 }
