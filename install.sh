@@ -527,11 +527,43 @@ EOF
 }
 
 upgrade_naive_systemd() {
+  if ! systemctl status naive &>/dev/null; then
+    echo_content red "---> naive not installed"
+    exit 0
+  fi
 
+  latest_version=$(curl -Ls "https://api.github.com/repos/jonssonyan/naive/releases/latest" | grep '"tag_name":' | sed 's/.*"tag_name": "\(.*\)",.*/\1/')
+  current_version=$(/usr/local/naive/naive -v | awk '{print $1}')
+  if [[ "${latest_version}" == "${current_version}" ]]; then
+    echo_content skyBlue "---> naive is already the latest version"
+    exit 0
+  fi
+
+  echo_content green "---> Upgrade naive"
+  if [[ $(systemctl is-active naive) == "active" ]]; then
+    systemctl stop naive
+  fi
+  curl -fsSL https://github.com/jonssonyan/naive/releases/latest/download/naive-linux-${get_arch} -o /usr/local/naive/naive &&
+    chmod +x /usr/local/naive/naive &&
+    systemctl restart naive
+  echo_content skyBlue "---> naive upgrade successful"
 }
 
 uninstall_naive_systemd() {
+  if ! systemctl status naive &>/dev/null; then
+    echo_content red "---> naive not installed"
+    exit 0
+  fi
 
+  echo_content green "---> Uninstall naive"
+  if [[ $(systemctl is-active naive) == "active" ]]; then
+    systemctl stop naive
+  fi
+  systemctl disable naive.service &&
+    rm -f /etc/systemd/system/naive.service &&
+    systemctl daemon-reload &&
+    rm -rf /usr/local/naive/
+  echo_content skyBlue "---> naive uninstall successful"
 }
 
 main() {
