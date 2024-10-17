@@ -70,7 +70,6 @@ version_ge() {
   local v2=${2#v}
 
   if [[ "${v1}" == "" || "${v1}" == "latest" ]]; then
-    echo true
     return 0
   fi
 
@@ -79,14 +78,12 @@ version_ge() {
 
   for ((i = 0; i < 3; i++)); do
     if ((${v1_parts[i]} < ${v2_parts[i]})); then
-      echo false
-      return 0
+      return 1
     elif ((${v1_parts[i]} > ${v2_parts[i]})); then
-      echo true
       return 0
     fi
   done
-  echo true
+  return 0
 }
 
 check_sys() {
