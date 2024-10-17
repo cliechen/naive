@@ -574,16 +574,362 @@ uninstall_naive_systemd() {
   echo_content skyBlue "---> naive uninstall successful"
 }
 
-install_naive_docker(){
+set_naive_docker_auto() {
+  echo_content yellow "Tip: Please confirm that the domain name has been resolved to this machine, otherwise the installation may fail"
+  while read -r -p "Please enter your domain name (required): " naive_domain; do
+    if [[ -z "${naive_domain}" ]]; then
+      echo_content red "Domain name cannot be empty"
+    else
+      break
+    fi
+  done
 
+  read -r -p "Please enter your email (optional): " naive_email
+
+  while read -r -p "Please choose the way to apply for the certificate (1/acme 2/zerossl default: 1: " naive_ssl_type; do
+    if [[ -z "${naive_ssl_type}" || ${naive_ssl_type} == 1 ]]; then
+      naive_ssl="acme"
+      break
+    elif [[ ${naive_ssl_type} == 2 ]]; then
+      naive_ssl="zerossl"
+      break
+    else
+      echo_content red "Cannot enter other characters except 1 and 2"
+    fi
+  done
+
+  cat >${naive_config_docker} <<EOF
+{
+  "admin": {
+    "disabled": true
+  },
+  "logging": {
+    "sink": {
+      "writer": {
+        "output": "stderr"
+      }
+    },
+    "logs": {
+      "default": {
+        "writer": {
+          "output": "stderr"
+        }
+      }
+    }
+  },
+  "storage":{
+      "module":"file_system",
+      "root":"${NAIVE_DATA_DOCKER}file_system/"
+  },
+  "apps": {
+    "http": {
+      "servers": {
+        "srv0": {
+          "listen": [
+            ":${naive_port}"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "handle": [
+                        {
+                          "auth_credentials": [
+                            "${naive_auth}"
+                          ],
+                          "handler": "forward_proxy",
+                          "hide_ip": true,
+                          "hide_via": true,
+                          "probe_resistance": {}
+                        }
+                      ]
+                    },
+                    {
+                      "match": [
+                        {
+                          "host": [
+                            "${naive_domain}"
+                          ]
+                        }
+                      ],
+                      "handle": [
+                        {
+                          "handler": "file_server",
+                          "root": "${NAIVE_DATA_DOCKER}html/",
+                          "index_names": [
+                            "index.html",
+                            "index.htm"
+                          ]
+                        }
+                      ],
+                      "terminal": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "tls_connection_policies": [
+            {
+              "match": {
+                "sni": [
+                  "${naive_domain}"
+                ]
+              }
+            }
+          ],
+          "automatic_https": {
+            "disable": true
+          }
+        }
+      }
+    },
+    "tls": {
+      "certificates": {
+        "automate": [
+          "${naive_domain}"
+        ]
+      },
+      "automation": {
+        "policies": [
+          {
+            "issuers": [
+              {
+                "module": "${naive_ssl}",
+                "email": "${naive_email}"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+EOF
 }
 
-upgrade_naive_docker(){
+set_naive_docker_custom() {
+  while read -r -p "Please enter your domain name (required): " naive_domain; do
+    if [[ -z "${naive_domain}" ]]; then
+      echo_content red "Domain name cannot be empty"
+    else
+      break
+    fi
+  done
 
+  while read -r -p "Please enter the crt path of naive (required): " naive_crt; do
+    if [[ -z "${naive_crt}" ]]; then
+      echo_content red "crt path cannot be empty"
+    else
+      break
+    fi
+  done
+
+  while read -r -p "Please enter the key path of naive (required): " naive_key; do
+    if [[ -z "${naive_key}" ]]; then
+      echo_content red "key path cannot be empty"
+    else
+      break
+    fi
+  done
+
+  cat >${naive_config_docker} <<EOF
+{
+  "admin": {
+    "disabled": true
+  },
+  "logging": {
+    "sink": {
+      "writer": {
+        "output": "stderr"
+      }
+    },
+    "logs": {
+      "default": {
+        "writer": {
+          "output": "stderr"
+        }
+      }
+    }
+  },
+  "storage":{
+      "module":"file_system",
+      "root":"${NAIVE_DATA_DOCKER}file_system/"
+  },
+  "apps": {
+    "http": {
+      "servers": {
+        "srv0": {
+          "listen": [
+            ":${naive_port}"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "handle": [
+                        {
+                          "auth_credentials": [
+                            "${naive_auth}"
+                          ],
+                          "handler": "forward_proxy",
+                          "hide_ip": true,
+                          "hide_via": true,
+                          "probe_resistance": {}
+                        }
+                      ]
+                    },
+                    {
+                      "match": [
+                        {
+                          "host": [
+                            "${naive_domain}"
+                          ]
+                        }
+                      ],
+                      "handle": [
+                        {
+                          "handler": "file_server",
+                          "root": "${NAIVE_DATA_DOCKER}html/",
+                          "index_names": [
+                            "index.html",
+                            "index.htm"
+                          ]
+                        }
+                      ],
+                      "terminal": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "tls_connection_policies": [
+            {
+              "match": {
+                "sni": [
+                  "${naive_domain}"
+                ]
+              }
+            }
+          ],
+          "automatic_https": {
+            "disable": true
+          }
+        }
+      }
+    },
+    "tls": {
+      "certificates": {
+        "load_files": [
+          {
+            "certificate": "${naive_crt}",
+            "key": "${naive_key}"
+          }
+        ]
+      }
+    }
+  }
+}
+EOF
 }
 
-uninstall_naive_docker(){
+set_naive_docker() {
+  while read -r -p "Please select the management certificate method(1/auto 2/custom default: 1): " naive_ssl_method; do
+    if [[ -z "${naive_ssl_method}" || ${naive_ssl_method} == 1 ]]; then
+      set_naive_docker_auto
+      break
+    elif [[ ${naive_ssl_method} == 2 ]]; then
+      set_naive_docker_custom
+      break
+    else
+      echo_content red "Cannot enter other characters except 1 and 2"
+    fi
+  done
+}
 
+install_naive_docker() {
+  if [[ -n $(docker ps -a -q -f "name=^naive$") ]]; then
+    echo_content skyBlue "---> naive is already installed"
+    exit 0
+  fi
+
+  echo_content green "---> Install naive"
+  mkdir -p ${NAIVE_DATA_DOCKER}
+
+  read -r -p "Please enter the port of naive (default: 444): " naive_port
+  [[ -z "${naive_port}" ]] && naive_port="444"
+
+  read -r -p "Please enter the username of naive (default: sysadmin): " naive_username
+  [[ -z "${naive_username}" ]] && naive_username="sysadmin"
+  read -r -p "Please enter the password of naive (default: sysadmin): " naive_password
+  [[ -z "${naive_password}" ]] && naive_password="sysadmin"
+  naive_auth=$(echo -n "${naive_username}:${naive_password}" | base64 | base64)
+
+  set_naive_docker
+
+  docker pull jonssonyan/naive &&
+    docker run -d \
+      --name naive --restart always \
+      --network=host \
+      -v /naive:/naive \
+      jonssonyan/naive"${naive_docker_version}" \
+      ./naive run --config ${naive_config_docker}
+  echo_content skyBlue "---> naive install successful"
+}
+
+upgrade_naive_docker() {
+  if [[ ! $(command -v docker) ]]; then
+    echo_content red "---> Docker not installed"
+    exit 0
+  fi
+  if [[ -z $(docker ps -a -q -f "name=^naive$") ]]; then
+    echo_content red "---> naive not installed"
+    exit 0
+  fi
+
+  latest_version=$(curl -Ls "https://api.github.com/repos/jonssonyan/naive/releases/latest" | grep '"tag_name":' | sed 's/.*"tag_name": "\(.*\)",.*/\1/')
+  current_version=$(docker exec naive ./naive version | awk '{print $1}')
+  if [[ "${latest_version}" == "${current_version}" ]]; then
+    echo_content skyBlue "---> naive is already the latest version"
+    exit 0
+  fi
+
+  echo_content green "---> Upgrade naive"
+  docker rm -f naive
+  docker rmi jonssonyan/naive
+
+  docker pull jonssonyan/naive &&
+    docker run -d \
+      --name naive --restart always \
+      --network=host \
+      -v /naive:/naive \
+      jonssonyan/naive \
+      ./naive run --config ${naive_config_docker}
+  echo_content skyBlue "---> naive upgrade successful"
+}
+
+uninstall_naive_docker() {
+  if [[ ! $(command -v docker) ]]; then
+    echo_content red "---> Docker not installed"
+    exit 0
+  fi
+  if [[ -z $(docker ps -a -q -f "name=^naive$") ]]; then
+    echo_content red "---> naive$ not installed"
+    exit 0
+  fi
+
+  echo_content green "---> Uninstall naive$"
+  docker rm -f naive
+  docker images jonssonyan/naive -q | xargs -r docker rmi -f
+  rm -rf /naive/
+  echo_content skyBlue "---> naive uninstall successful"
 }
 
 main() {
