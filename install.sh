@@ -878,7 +878,7 @@ install_naive_docker() {
     docker run -d \
       --name naive --restart always \
       --network=host \
-      -v /naive:/naive \
+      -v /naive/cert/:/naive/cert/ \
       jonssonyan/naive"${naive_docker_version}" \
       ./naive run --config ${naive_config_docker}
   echo_content skyBlue "---> naive install successful"
@@ -909,7 +909,7 @@ upgrade_naive_docker() {
     docker run -d \
       --name naive --restart always \
       --network=host \
-      -v /naive:/naive \
+      -v /naive/cert/:/naive/cert/ \
       jonssonyan/naive \
       ./naive run --config ${naive_config_docker}
   echo_content skyBlue "---> naive upgrade successful"
