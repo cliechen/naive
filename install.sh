@@ -846,7 +846,7 @@ upgrade_naive_systemd() {
   fi
 
   bin_url=https://github.com/jonssonyan/naive/releases/latest/download/naive-linux-${get_arch}
-  if [[ ! $(version_ge "${current_version}" "v2.7.6") ]]; then
+  if ! version_ge "${current_version}" "v2.7.6"; then
     bin_url=https://github.com/jonssonyan/naive/releases/download/v2.7.5/naive-linux-${get_arch}
   fi
 
@@ -1235,7 +1235,7 @@ upgrade_naive_docker() {
   docker rmi jonssonyan/naive
 
   pull_version=""
-  if [[ ! $(version_ge "${current_version}" "v2.7.6") ]]; then
+  if ! version_ge "${current_version}" "v2.7.6"; then
     pull_version="2.7.5"
   fi
 
