@@ -43,7 +43,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/instal
 
 下载可执行文件: https://github.com/jonssonyan/naive/releases
 
-新建配置文件 naive.json, 示例: [config_examples](config_examples)
+新建配置文件 naive.json, 示例: [naive.json](naive.json)
 
 ```bash
 mkdir -p /usr/local/naive/
@@ -74,7 +74,7 @@ rm -rf /etc/systemd/system/naive.service /usr/local/naive/
 
 2. 启动容器
 
-   新建配置文件 naive.json, 示例: [config_examples](config_examples)
+   新建配置文件 naive.json, 示例: [naive.json](naive.json)
 
 ## 性能优化
 

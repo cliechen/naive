@@ -43,7 +43,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/instal
 
 Executable files: https://github.com/jonssonyan/naive/releases
 
-Create a new configuration file naive.json, examples: [config_examples](config_examples)
+Create a new configuration file naive.json, examples: [naive.json](naive.json)
 
 ```bash
 mkdir -p /usr/local/naive/
@@ -74,7 +74,7 @@ rm -rf /etc/systemd/system/naive.service /usr/local/naive/
 
 2. Start a container
 
-  Create a new configuration file naive.json, examples: [config_examples](config_examples)
+  Create a new configuration file naive.json, examples: [naive.json](naive.json)
 
 ## Performance Optimization
 
