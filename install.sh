@@ -834,7 +834,7 @@ upgrade_naive_systemd() {
   fi
 
   latest_version=$(curl -Ls "https://api.github.com/repos/jonssonyan/naive/releases/latest" | grep '"tag_name":' | sed 's/.*"tag_name": "\(.*\)",.*/\1/')
-  current_version=$(/usr/local/naive/naive -v | awk '{print $1}')
+  current_version=$(/usr/local/naive/naive version | awk '{print $1}')
   if [[ "${latest_version}" == "${current_version}" ]]; then
     echo_content skyBlue "---> naive is already the latest version"
     exit 0
