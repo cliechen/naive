@@ -947,6 +947,10 @@ main() {
   echo_content yellow "1. Install naive (systemd)"
   echo_content yellow "2. Upgrade naive (systemd)"
   echo_content yellow "3. Uninstall naive (systemd)"
+  echo_content red "\n=============================================================="
+  echo_content yellow "4. Install naive (Docker)"
+  echo_content yellow "5. Upgrade naive (Docker)"
+  echo_content yellow "6. Uninstall naive (Docker)"
   read -r -p "Please choose: " input_option
   case ${input_option} in
   1)
