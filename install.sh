@@ -758,14 +758,14 @@ set_naive() {
 
   while read -r -p "Please select the management certificate method(1/auto 2/custom default: 1): " naive_ssl_method; do
     if [[ -z "${naive_ssl_method}" || ${naive_ssl_method} == 1 ]]; then
-      if [[ $(version_ge "${naive_systemd_version}" "v2.7.6") ]]; then
+      if version_ge "${naive_systemd_version}" "v2.7.6"; then
         set_naive_auto
       else
         set_naive_auto_lt276
       fi
       break
     elif [[ ${naive_ssl_method} == 2 ]]; then
-      if [[ $(version_ge "${naive_systemd_version}" "v2.7.6") ]]; then
+      if version_ge "${naive_systemd_version}" "v2.7.6"; then
         set_naive_custom
       else
         set_naive_custom_lt276
