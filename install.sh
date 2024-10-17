@@ -1255,11 +1255,11 @@ uninstall_naive_docker() {
     exit 0
   fi
   if [[ -z $(docker ps -a -q -f "name=^naive$") ]]; then
-    echo_content red "---> naive$ not installed"
+    echo_content red "---> naive not installed"
     exit 0
   fi
 
-  echo_content green "---> Uninstall naive$"
+  echo_content green "---> Uninstall naive"
   docker rm -f naive
   docker images jonssonyan/naive -q | xargs -r docker rmi -f
   rm -rf /naive/
