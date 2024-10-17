@@ -1171,7 +1171,7 @@ install_naive_docker() {
 
   echo_content green "---> Install naive"
   mkdir -p ${NAIVE_DATA_DOCKER}
-  mkdir -p ${NAIVE_DATA_SYSTEMD}html/
+  mkdir -p ${NAIVE_DATA_DOCKER}html/
   mkdir -p ${NAIVE_DATA_DOCKER}config/
 
   cat >${NAIVE_DATA_DOCKER}html/index.html <<EOF
