@@ -147,7 +147,7 @@ Telegram Channel: https://t.me/jonssonyan_channel
 
 如果这个项目对你有帮助，你可以请我喝杯咖啡:
 
-<img src="https://jonssonyan.com/images/zsm.jpg" width="150" alt="微信赞赏码" title="微信赞赏码"/>
+<img src="https://github.com/jonssonyan/install-script/assets/46235235/cce90c48-27d3-492c-af3e-468b656bdd06" width="150" alt="微信赞赏码" title="微信赞赏码"/>
 
 ## 开源协议
 
