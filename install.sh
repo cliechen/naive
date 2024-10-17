@@ -330,6 +330,14 @@ EOF
 }
 
 set_naive_custom() {
+  while read -r -p "Please enter your domain name (required): " naive_domain; do
+    if [[ -z "${naive_domain}" ]]; then
+      echo_content red "Domain name cannot be empty"
+    else
+      break
+    fi
+  done
+
   while read -r -p "Please enter the crt path of naive (required): " naive_crt; do
     if [[ -z "${naive_crt}" ]]; then
       echo_content red "crt path cannot be empty"
