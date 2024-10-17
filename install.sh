@@ -862,6 +862,7 @@ install_naive_docker() {
 
   echo_content green "---> Install naive"
   mkdir -p ${NAIVE_DATA_DOCKER}
+  mkdir -p ${NAIVE_DATA_DOCKER}config/
 
   read -r -p "Please enter the port of naive (default: 444): " naive_port
   [[ -z "${naive_port}" ]] && naive_port="444"
