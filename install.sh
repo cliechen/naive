@@ -69,6 +69,11 @@ version_ge() {
   local v1=${1#v}
   local v2=${2#v}
 
+  if [[ "${v1}" == "" || "${v1}" == "latest" ]]; then
+    echo true
+    return 0
+  fi
+
   local v1_parts=(${v1//./ })
   local v2_parts=(${v2//./ })
 
