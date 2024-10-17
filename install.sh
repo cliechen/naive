@@ -18,8 +18,10 @@ init_var() {
   naive_config_docker="/naive/naive.json"
   naive_config_systemd="/usr/local/naive/naive.json"
 
+  naive_ssl_method=1
   naive_domain=""
   naive_email=""
+  naive_ssl=1
   naive_crt=""
   naive_key=""
 
@@ -190,10 +192,276 @@ install_docker() {
   fi
 }
 
-set_naive() {
-  cat >${naive_config_systemd} <<EOF
+set_naive_auto() {
+  echo_content yellow "Tip: Please confirm that the domain name has been resolved to this machine, otherwise the installation may fail"
+  while read -r -p "Please enter your domain name (required): " naive_domain; do
+    if [[ -z "${naive_domain}" ]]; then
+      echo_content red "Domain name cannot be empty"
+    else
+      break
+    fi
+  done
 
+  read -r -p "Please enter your email (optional): " naive_email
+
+  while read -r -p "Please choose the way to apply for the certificate (1/acme 2/zerossl default: 1: " naive_ssl_type; do
+    if [[ -z "${naive_ssl_type}" || ${naive_ssl_type} == 1 ]]; then
+      naive_ssl="acme"
+      break
+    elif [[ ${naive_ssl_type} == 2 ]]; then
+      naive_ssl="zerossl"
+      break
+    else
+      echo_content red "Cannot enter other characters except 1 and 2"
+    fi
+  done
+
+  cat >${naive_config_systemd} <<EOF
+{
+  "admin": {
+    "disabled": true
+  },
+  "logging": {
+    "sink": {
+      "writer": {
+        "output": "stderr"
+      }
+    },
+    "logs": {
+      "default": {
+        "writer": {
+          "output": "stderr"
+        }
+      }
+    }
+  },
+  "storage":{
+      "module":"file_system",
+      "root":"${NAIVE_DATA_SYSTEMD}file_system"
+  },
+  "apps": {
+    "http": {
+      "servers": {
+        "srv0": {
+          "listen": [
+            ":${naive_port}"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "handle": [
+                        {
+                          "auth_credentials": [
+                            "${naive_auth}"
+                          ],
+                          "handler": "forward_proxy",
+                          "hide_ip": true,
+                          "hide_via": true,
+                          "probe_resistance": {}
+                        }
+                      ]
+                    },
+                    {
+                      "match": [
+                        {
+                          "host": [
+                            "${naive_domain}"
+                          ]
+                        }
+                      ],
+                      "handle": [
+                        {
+                          "handler": "file_server",
+                          "root": "${NAIVE_DATA_SYSTEMD}html",
+                          "index_names": [
+                            "index.html",
+                            "index.htm"
+                          ]
+                        }
+                      ],
+                      "terminal": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "tls_connection_policies": [
+            {
+              "match": {
+                "sni": [
+                  "${naive_domain}"
+                ]
+              }
+            }
+          ],
+          "automatic_https": {
+            "disable": true
+          }
+        }
+      }
+    },
+    "tls": {
+      "certificates": {
+        "automate": [
+          "${naive_domain}"
+        ]
+      },
+      "automation": {
+        "policies": [
+          {
+            "issuers": [
+              {
+                "module": "${naive_ssl}",
+                "email": "${naive_email}"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
 EOF
+}
+
+set_naive_custom() {
+  while read -r -p "Please enter the crt path of naive (required): " naive_crt; do
+    if [[ -z "${naive_crt}" ]]; then
+      echo_content red "crt path cannot be empty"
+    else
+      break
+    fi
+  done
+
+  while read -r -p "Please enter the key path of naive (required): " naive_key; do
+    if [[ -z "${naive_key}" ]]; then
+      echo_content red "key path cannot be empty"
+    else
+      break
+    fi
+  done
+
+  cat >${naive_config_systemd} <<EOF
+{
+  "admin": {
+    "disabled": true
+  },
+  "logging": {
+    "sink": {
+      "writer": {
+        "output": "stderr"
+      }
+    },
+    "logs": {
+      "default": {
+        "writer": {
+          "output": "stderr"
+        }
+      }
+    }
+  },
+  "storage":{
+      "module":"file_system",
+      "root":"${NAIVE_DATA_SYSTEMD}file_system"
+  },
+  "apps": {
+    "http": {
+      "servers": {
+        "srv0": {
+          "listen": [
+            ":${naive_port}"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "subroute",
+                  "routes": [
+                    {
+                      "handle": [
+                        {
+                          "auth_credentials": [
+                            "${naive_auth}"
+                          ],
+                          "handler": "forward_proxy",
+                          "hide_ip": true,
+                          "hide_via": true,
+                          "probe_resistance": {}
+                        }
+                      ]
+                    },
+                    {
+                      "match": [
+                        {
+                          "host": [
+                            "${naive_domain}"
+                          ]
+                        }
+                      ],
+                      "handle": [
+                        {
+                          "handler": "file_server",
+                          "root": "${NAIVE_DATA_SYSTEMD}html",
+                          "index_names": [
+                            "index.html",
+                            "index.htm"
+                          ]
+                        }
+                      ],
+                      "terminal": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "tls_connection_policies": [
+            {
+              "match": {
+                "sni": [
+                  "${naive_domain}"
+                ]
+              }
+            }
+          ],
+          "automatic_https": {
+            "disable": true
+          }
+        }
+      }
+    },
+    "tls": {
+      "certificates": {
+        "load_files": [
+          {
+            "certificate": "${naive_crt}",
+            "key": "${naive_key}"
+          }
+        ]
+      }
+    }
+  }
+}
+EOF
+}
+
+set_naive() {
+  while read -r -p "Please select the management certificate method(1/auto 2/custom default: 1): " naive_ssl_method; do
+    if [[ -z "${naive_ssl_method}" || ${naive_ssl_method} == 1 ]]; then
+      set_naive_auto
+      break
+    elif [[ ${naive_ssl_method} == 2 ]]; then
+      set_naive_custom
+      break
+    else
+      echo_content red "Cannot enter other characters except 1 and 2"
+    fi
+  done
 }
 
 install_naive_systemd() {
@@ -204,14 +472,36 @@ install_naive_systemd() {
 
   echo_content green "---> Install naive"
   mkdir -p ${NAIVE_DATA_SYSTEMD}
-  mkdir -p ${NAIVE_DATA_SYSTEMD}/dist/
+  mkdir -p ${NAIVE_DATA_SYSTEMD}html/
+
+  cat >${NAIVE_DATA_SYSTEMD}html/index.html <<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+EOF
 
   read -r -p "Please enter the port of naive (default: 444): " naive_port
   [[ -z "${naive_port}" ]] && naive_port="444"
-
-  read -r -p "Please enter the domain of naive: " naive_domain
-  read -r -p "Please enter the crt path of naive: " naive_crt
-  read -r -p "Please enter the key path of naive: " naive_key
 
   read -r -p "Please enter the username of naive (default: sysadmin): " naive_username
   [[ -z "${naive_username}" ]] && naive_username="sysadmin"
@@ -234,6 +524,14 @@ install_naive_systemd() {
     systemctl enable naive &&
     systemctl restart naive
   echo_content skyBlue "---> naive install successful"
+}
+
+upgrade_naive_systemd() {
+
+}
+
+uninstall_naive_systemd() {
+
 }
 
 main() {

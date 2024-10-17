@@ -16,12 +16,16 @@
       }
     }
   },
+  "storage": {
+    "module": "file_system",
+    "root": "${NAIVE_DATA_SYSTEMD}file_system"
+  },
   "apps": {
     "http": {
       "servers": {
         "srv0": {
           "listen": [
-            ":${your_port}"
+            ":${naive_port}"
           ],
           "routes": [
             {
@@ -33,7 +37,7 @@
                       "handle": [
                         {
                           "auth_credentials": [
-                            "${your_username}:${your_password}"
+                            "${naive_auth}"
                           ],
                           "handler": "forward_proxy",
                           "hide_ip": true,
@@ -46,14 +50,14 @@
                       "match": [
                         {
                           "host": [
-                            "${your_domain}"
+                            "${naive_domain}"
                           ]
                         }
                       ],
                       "handle": [
                         {
                           "handler": "file_server",
-                          "root": "${your_file_dist}",
+                          "root": "${NAIVE_DATA_SYSTEMD}html",
                           "index_names": [
                             "index.html",
                             "index.htm"
@@ -71,7 +75,7 @@
             {
               "match": {
                 "sni": [
-                  "${your_domain}"
+                  "${naive_domain}"
                 ]
               }
             }
@@ -85,7 +89,7 @@
     "tls": {
       "certificates": {
         "automate": [
-          "${your_domain}"
+          "${naive_domain}"
         ]
       },
       "automation": {
@@ -93,8 +97,8 @@
           {
             "issuers": [
               {
-                "module": "${ssl_module}",
-                "email": "${your_email}"
+                "module": "${naive_ssl}",
+                "email": "${naive_email}"
               }
             ]
           }

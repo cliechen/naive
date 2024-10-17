@@ -43,11 +43,12 @@ bash <(curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/instal
 
 Executable files: https://github.com/jonssonyan/naive/releases
 
+Create a new configuration file naive.json, examples: [config_examples](config_examples)
+
 ```bash
 mkdir -p /usr/local/naive/
 curl -fsSL https://github.com/jonssonyan/naive/releases/latest/download/naive-linux-amd64 -o /usr/local/naive/naive && chmod +x /usr/local/naive/naive
 curl -fsSL https://raw.githubusercontent.com/jonssonyan/naive/main/naive.service -o /etc/systemd/system/naive.service
-# Create a new configuration file naive.json
 sed -i "s|^ExecStart=.*|ExecStart=/usr/local/naive/naive run --config naive.json|" "/etc/systemd/system/naive.service"
 systemctl daemon-reload
 systemctl enable naive
@@ -72,6 +73,8 @@ rm -rf /etc/systemd/system/naive.service /usr/local/naive/
    ```
 
 2. Start a container
+
+  Create a new configuration file naive.json, examples: [config_examples](config_examples)
 
 ## Performance Optimization
 
