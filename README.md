@@ -15,6 +15,13 @@ English / [简体中文](README_ZH.md)
 
 </div>
 
+## Features
+
+1. Easy to deploy
+2. User authentication
+3. Custom camouflage website
+4. Automatic certificate management
+
 ## Recommended OS
 
 OS: CentOS 8+/Ubuntu 20+/Debian 11+
