@@ -751,7 +751,7 @@ set_naive() {
   [[ -z "${naive_username}" ]] && naive_username="sysadmin"
   read -r -p "Please enter the password of naive (default: sysadmin): " naive_password
   [[ -z "${naive_password}" ]] && naive_password="sysadmin"
-  naive_auth=$(echo -n "${naive_username}:${naive_password}" | base64 | base64)
+  naive_auth=$(echo -n "${naive_username}:${naive_password}" | base64 | tr --delete '\n' | base64)
 
   while read -r -p "Please select the management certificate method(1/auto 2/custom default: 1): " naive_ssl_method; do
     if [[ -z "${naive_ssl_method}" || ${naive_ssl_method} == 1 ]]; then
