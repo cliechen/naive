@@ -73,16 +73,16 @@ version_ge() {
     return 0
   fi
 
-  local v1_parts=(${v1//./ })
-  local v2_parts=(${v2//./ })
+  IFS='.' read -r -a v1_parts <<<"$v1"
+  IFS='.' read -r -a v2_parts <<<"$v2"
 
-  for ((i = 0; i < ${#v1_parts[@]}; i++)); do
+  for i in "${!v1_parts[@]}"; do
     local part1=${v1_parts[i]:-0}
     local part2=${v2_parts[i]:-0}
 
-    if ((part1 < part2)); then
+    if [[ "$part1" < "$part2" ]]; then
       return 1
-    elif ((part1 > part2)); then
+    elif [[ "$part1" > "$part2" ]]; then
       return 0
     fi
   done
