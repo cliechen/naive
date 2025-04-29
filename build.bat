@@ -20,3 +20,6 @@ SET GOARCH=ppc64le
 xcaddy build %CADDY_VERSION% --output build/naive-linux-ppc64le --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive
 SET GOARCH=s390x
 xcaddy build %CADDY_VERSION% --output build/naive-linux-s390x --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive
+SET GOOS=windows
+SET GOARCH=amd64
+xcaddy build %CADDY_VERSION% --output build/naive-windows-amd64.exe --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive

@@ -53,6 +53,7 @@ cross_compile_caddy() {
     "linux/arm64"
     "linux/ppc64le"
     "linux/s390x"
+    "windows/amd64"
   )
 
   mkdir -p build || handle_error "Failed to create build directory."
@@ -64,6 +65,9 @@ cross_compile_caddy() {
     XCADDY_OUT="build/naive-${GOOS}-${GOARCH}"
     if [[ "$GOARCH" == "arm" ]]; then
       XCADDY_OUT="${XCADDY_OUT}v${GOARM}"
+    fi
+    if [[ ${GOOS} == "windows" ]]; then
+      XCADDY_OUT="build/naive-${GOOS}-${GOARCH}".exe
     fi
 
     echo "Cross-compiling Caddy for $GOOS/$GOARCH/$GOARM..."
