@@ -67,7 +67,7 @@ cross_compile_caddy() {
       XCADDY_OUT="${XCADDY_OUT}v${GOARM}"
     fi
     if [[ ${GOOS} == "windows" ]]; then
-      XCADDY_OUT="build/naive-${GOOS}-${GOARCH}".exe
+      XCADDY_OUT="${XCADDY_OUT}.exe"
     fi
 
     echo "Cross-compiling Caddy for $GOOS/$GOARCH/$GOARM..."
